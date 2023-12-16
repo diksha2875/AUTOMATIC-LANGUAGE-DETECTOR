@@ -1,0 +1,47 @@
+import tkinter as tk
+from tkinter import ttk
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+
+# Sample data for demonstration
+data = {'text': ['Hello, how are you?', 'Bonjour, comment ça va?', 'Hola, ¿cómo estás?', 'Ciao, come stai?'],
+        'language': ['English', 'French', 'Spanish', 'Italian']}
+
+# Creating a DataFrame (you might use a real dataset)
+import pandas as pd
+df = pd.DataFrame(data)
+
+# Splitting the data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(df['text'], df['language'], test_size=0.2, random_state=42)
+
+# Creating a machine learning model
+model = make_pipeline(CountVectorizer(), MultinomialNB())
+model.fit(X_train, y_train)
+
+# GUI
+def predict_language():
+    text_to_predict = entry.get()
+    predicted_language = model.predict([text_to_predict])
+    result_label.config(text=f"Predicted Language: {predicted_language[0]}")
+
+# Creating the main window
+root = tk.Tk()
+root.title("Language Predictor")
+
+# GUI components
+label = tk.Label(root, text="Enter Text:")
+label.pack(pady=10)
+
+entry = tk.Entry(root, width=30)
+entry.pack(pady=10)
+
+predict_button = tk.Button(root, text="Predict Language", command=predict_language)
+predict_button.pack(pady=10)
+
+result_label = tk.Label(root, text="")
+result_label.pack(pady=10)
+
+# Running the GUI
+root.mainloop()
